@@ -1,0 +1,38 @@
+@startuml
+
+caption Схема навигации страниц
+
+(Главная страница) as main
+(Список клиентов) as clientList
+(Страница заключения договора) as newClient
+(Информация о клиенте) as client
+(Счёт) as account
+(Список предоставляемых услуг) as serviceList
+(Информация об услуге) as service
+(Добавление услуги) as newService
+(Операции по счёту) as operations
+
+main --> clientList : Кнопка\n <<Управление клиентами>>
+main --> serviceList : Кнопка\n <<Управление услугами>>
+
+clientList --> account : Поле ввода\n номера счёта
+clientList --> newClient : Кнопка\n <<Заключить новый договор>>
+clientList --> client : Нажатие\n на элемент списка
+
+newClient --> client : Автоматически\n после сохранения
+
+client --> account : Нажатие на элемент\n списка счетов
+
+account --> operations : Кнопка\n <<Операции по счёту>>
+account --> service : Нажатие на\n элемент списка\n подключенных услуг
+
+serviceList --> service : Нажатие на\n элемент списка
+serviceList --> newService : Кнопка\n <<Новая услуга>>
+
+newService --> service : Автоматически\n после сохранения
+
+operations --> service : Нажатие на\n название услуги
+
+@enduml
+
+

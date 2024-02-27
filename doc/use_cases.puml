@@ -1,0 +1,50 @@
+@startuml
+
+caption Диаграмма вариантов использования
+
+actor :Оператор биллинговой базы: as op
+
+(Найти клиента) as clientInfo
+(Получить список\n клиентов) as clientList
+(Править данные\n клиента) as clientEdit
+(Получить\n информацию о счёте) as accountInfo
+(Открыть счёт клиенту) as accountNew
+(Подключить или\n отключить услугу\n клиенту) as serviceAdd
+(Найти услугу) as serviceInfo
+(Получить список\n услуг) as serviceList
+(Править услугу) as serviceEdit
+(Создать новую услугу) as serviceNew
+(Заключить договор) as clientNew
+(Получить операции\n по счёту) as operations
+
+op --> clientEdit
+clientEdit ..> clientInfo : include
+clientInfo ..> clientList : include
+accountInfo ..> clientList : include
+
+op --> clientNew
+clientNew ..> clientList : include
+(Получить список клиентов,\n удовлетворяющих условию) --|> clientList
+
+op --> serviceNew
+serviceNew ..> serviceList : include
+
+op --> serviceEdit
+serviceEdit ..> serviceInfo : include
+serviceInfo ..> serviceList : include
+
+op --> operations
+operations ..> accountInfo : include
+(Получить детализацию\n расходов в заданный\n период времени) --|> operations
+
+op --> accountNew
+accountNew ..> accountInfo : include
+
+op --> serviceAdd
+serviceAdd ..> serviceList : include
+serviceAdd ..> accountInfo : include
+
+
+
+
+@enduml
