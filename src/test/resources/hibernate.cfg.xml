@@ -1,0 +1,26 @@
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/webprac_test</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">1234</property>
+
+        <!-- Hibernate dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Set the show SQL property for debugging purposes -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.highlight_sql">true</property>
+
+        <!-- Mapping  -->
+        <mapping class="cmc.sp.webprac.models.IndividualClient" />
+        <mapping class="cmc.sp.webprac.models.EntityClient" />
+        <mapping class="cmc.sp.webprac.models.Account" />
+        <mapping class="cmc.sp.webprac.models.Operation" />
+        <mapping class="cmc.sp.webprac.models.Service" />
+        <mapping class="cmc.sp.webprac.models.ConnectedServices" />
+
+    </session-factory>
+</hibernate-configuration>

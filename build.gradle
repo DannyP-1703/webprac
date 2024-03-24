@@ -18,14 +18,31 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.hibernate.orm:hibernate-core'
+	implementation 'org.springframework:spring-orm'
+	implementation 'org.postgresql:postgresql'
+
 	runtimeOnly 'org.postgresql:postgresql'
+
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation(platform('org.junit:junit-bom:5.10.2'))
+	testImplementation('org.junit.jupiter:junit-jupiter')
+	testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-/*tasks.register('createDatabase', Exec) {
-
+/*tasks.register('databaseCreate') {
+	group = 'database'
+	doLast {
+		URL[] urls = sourceSets.main.runtimeClasspath.files as URL[]
+		def classloader = new URLClassLoader(urls, null)
+		Class myClass = classloader.load("cmc.sp.webprac.DatabaseInit")
+		def myInstance = myClass.newInstance()
+		Method method = myClass.getMethod("doStuff")
+		method.invoke(myInstance)
+	}
 }*/
