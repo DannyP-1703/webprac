@@ -1,3 +1,5 @@
+-- docker run -p 5432:5432 —name webprac -e POSTGRES_DB=webprac -e POSTGRES_PASSWORD=1234 -v src/main/resources/sql:/data/ -d postgres
+
 CREATE TABLE individual_client (
   client_id SERIAL PRIMARY KEY,
   passport CHAR[10] UNIQUE NOT NULL,
@@ -39,17 +41,6 @@ CREATE TABLE account (
   CHECK ( (individual_client_id IS NULL) != (entity_client_id IS NULL) )
 );
 
-CREATE TABLE operation (
-  operation_id SERIAL PRIMARY KEY,
-  operation_time TIMESTAMP NOT NULL,
-  account_id INT NOT NULL REFERENCES account (account_id) ON DELETE CASCADE,
-  "type" OPERATION_TYPE NOT NULL,
-  money_amount NUMERIC NOT NULL CHECK (money_amount >= 0),
-  service_id INT REFERENCES service (service_id) ON DELETE CASCADE,
-  UNIQUE (operation_time, account_id, service_id),
-  CHECK ( ("type" = 'Пополнение') = (service_id IS NULL) )
-);
-
 CREATE TABLE service (
   service_id SERIAL PRIMARY KEY,
   "name" VARCHAR[100] UNIQUE NOT NULL,
@@ -66,6 +57,17 @@ CREATE TABLE service (
     (subscription_type = 'Без а/п (единовременная)') OR NOT (activation_fee IS NOT NULL AND duration IS NULL) AND
     (subscription_type IN ('Ежедневно', 'Ежемесячно', 'Ежегодно')) OR NOT (subscription_fee IS NOT NULL)
   )
+);
+
+CREATE TABLE operation (
+  operation_id SERIAL PRIMARY KEY,
+  operation_time TIMESTAMP NOT NULL,
+  account_id INT NOT NULL REFERENCES account (account_id) ON DELETE CASCADE,
+  "type" OPERATION_TYPE NOT NULL,
+  money_amount NUMERIC NOT NULL CHECK (money_amount >= 0),
+  service_id INT REFERENCES service (service_id) ON DELETE CASCADE,
+  UNIQUE (operation_time, account_id, service_id),
+  CHECK ( ("type" = 'Пополнение') = (service_id IS NULL) )
 );
 
 CREATE TABLE connected_service (
