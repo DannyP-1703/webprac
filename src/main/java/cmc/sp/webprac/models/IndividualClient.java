@@ -2,6 +2,8 @@ package cmc.sp.webprac.models;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "individual_client")
 public class IndividualClient {
@@ -32,6 +34,17 @@ public class IndividualClient {
     private String email;
 
     public IndividualClient() {
+    }
+
+    public IndividualClient(Integer client_id, String passport, String surname, String name, String patronymic, String region, String contact_phone_number, String email) {
+        this.client_id = client_id;
+        this.passport = passport;
+        this.surname = surname;
+        this.name = name;
+        this.patronymic = patronymic;
+        this.region = region;
+        this.contact_phone_number = contact_phone_number;
+        this.email = email;
     }
 
     public Integer getClient_id() {
@@ -110,5 +123,13 @@ public class IndividualClient {
                 ", contact_phone_number='" + contact_phone_number + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IndividualClient that = (IndividualClient) o;
+        return Objects.equals(client_id, that.client_id) && Objects.equals(passport, that.passport) && Objects.equals(surname, that.surname) && Objects.equals(name, that.name) && Objects.equals(patronymic, that.patronymic) && Objects.equals(region, that.region) && Objects.equals(contact_phone_number, that.contact_phone_number) && Objects.equals(email, that.email);
     }
 }

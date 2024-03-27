@@ -3,6 +3,7 @@ package cmc.sp.webprac.models;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "connected_service")
@@ -21,9 +22,14 @@ public class ConnectedServices {
     @Column(nullable = false)
     private Timestamp connection_time;
 
-    private Timestamp disconnection_time;
-
     public ConnectedServices() {
+    }
+
+    public ConnectedServices(Integer connection_id, Integer account_id, Integer service_id, Timestamp connection_time) {
+        this.connection_id = connection_id;
+        this.account_id = account_id;
+        this.service_id = service_id;
+        this.connection_time = connection_time;
     }
 
     public Integer getConnection_id() {
@@ -58,14 +64,6 @@ public class ConnectedServices {
         this.connection_time = connection_time;
     }
 
-    public Timestamp getDisconnection_time() {
-        return disconnection_time;
-    }
-
-    public void setDisconnection_time(Timestamp disconnection_time) {
-        this.disconnection_time = disconnection_time;
-    }
-
     @Override
     public String toString() {
         return "ConnectedServices{" +
@@ -73,7 +71,14 @@ public class ConnectedServices {
                 ", account_id=" + account_id +
                 ", service_id=" + service_id +
                 ", connection_time=" + connection_time +
-                ", disconnection_time=" + disconnection_time +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConnectedServices that = (ConnectedServices) o;
+        return Objects.equals(connection_id, that.connection_id) && Objects.equals(account_id, that.account_id) && Objects.equals(service_id, that.service_id) && Objects.equals(connection_time, that.connection_time);
     }
 }

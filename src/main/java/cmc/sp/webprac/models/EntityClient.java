@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.Objects;
+
 public class EntityClient {
     @Id
     @Column(nullable = false)
@@ -39,6 +41,19 @@ public class EntityClient {
     private String email;
 
     public EntityClient() {
+    }
+
+    public EntityClient(Integer client_id, String registration_number, String name, String region, String address, String contact_surname, String contact_name, String contact_patronymic, String contact_phone_number, String email) {
+        this.client_id = client_id;
+        this.registration_number = registration_number;
+        this.name = name;
+        this.region = region;
+        this.address = address;
+        this.contact_surname = contact_surname;
+        this.contact_name = contact_name;
+        this.contact_patronymic = contact_patronymic;
+        this.contact_phone_number = contact_phone_number;
+        this.email = email;
     }
 
     public Integer getClient_id() {
@@ -131,5 +146,13 @@ public class EntityClient {
                 ", contact_surname='" + contact_surname + '\'' +
                 ", contact_phone_number='" + contact_phone_number + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntityClient that = (EntityClient) o;
+        return Objects.equals(client_id, that.client_id) && Objects.equals(registration_number, that.registration_number) && Objects.equals(name, that.name) && Objects.equals(region, that.region) && Objects.equals(address, that.address) && Objects.equals(contact_surname, that.contact_surname) && Objects.equals(contact_name, that.contact_name) && Objects.equals(contact_patronymic, that.contact_patronymic) && Objects.equals(contact_phone_number, that.contact_phone_number) && Objects.equals(email, that.email);
     }
 }

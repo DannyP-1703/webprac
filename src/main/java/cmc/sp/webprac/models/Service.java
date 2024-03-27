@@ -1,9 +1,11 @@
 package cmc.sp.webprac.models;
 
+import cmc.sp.webprac.enums.SubscriptionType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.Objects;
 
 @Entity
 @Table(name = "service")
@@ -16,8 +18,9 @@ public class Service {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String subscription_type;
+    private SubscriptionType subscription_type;
 
     private BigDecimal activation_fee;
 
@@ -39,6 +42,20 @@ public class Service {
     public Service() {
     }
 
+    public Service(Integer service_id, String name, SubscriptionType subscription_type, BigDecimal activation_fee, BigDecimal subscription_fee, BigDecimal deactivation_fee, Duration duration, Short package_phone, Short package_internet, Short package_message, String description) {
+        this.service_id = service_id;
+        this.name = name;
+        this.subscription_type = subscription_type;
+        this.activation_fee = activation_fee;
+        this.subscription_fee = subscription_fee;
+        this.deactivation_fee = deactivation_fee;
+        this.duration = duration;
+        this.package_phone = package_phone;
+        this.package_internet = package_internet;
+        this.package_message = package_message;
+        this.description = description;
+    }
+
     public Integer getService_id() {
         return service_id;
     }
@@ -55,11 +72,11 @@ public class Service {
         this.name = name;
     }
 
-    public String getSubscription_type() {
+    public SubscriptionType getSubscription_type() {
         return subscription_type;
     }
 
-    public void setSubscription_type(String subscription_type) {
+    public void setSubscription_type(SubscriptionType subscription_type) {
         this.subscription_type = subscription_type;
     }
 
@@ -142,5 +159,13 @@ public class Service {
                 ", package_message=" + package_message +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Service service = (Service) o;
+        return Objects.equals(service_id, service.service_id) && Objects.equals(name, service.name) && Objects.equals(subscription_type, service.subscription_type) && Objects.equals(activation_fee, service.activation_fee) && Objects.equals(subscription_fee, service.subscription_fee) && Objects.equals(deactivation_fee, service.deactivation_fee) && Objects.equals(duration, service.duration) && Objects.equals(package_phone, service.package_phone) && Objects.equals(package_internet, service.package_internet) && Objects.equals(package_message, service.package_message) && Objects.equals(description, service.description);
     }
 }

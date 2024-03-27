@@ -1,10 +1,12 @@
 package cmc.sp.webprac.models;
 
+import cmc.sp.webprac.enums.AccountStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.util.Objects;
 
 @Entity
 @Table(name = "account")
@@ -26,15 +28,29 @@ public class Account {
 
     private String serviced_phone_number;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private AccountStatus status;
 
+    @Column(nullable = false)
     private BigDecimal credit_max;
 
     @Column(name = "credit_interval", columnDefinition = "interval")
     private Duration credit_interval;
 
     public Account() {
+    }
+
+    public Account(Integer account_id, Integer individual_client_id, Integer entity_client_id, Timestamp creation_time, BigDecimal balance, String serviced_phone_number, AccountStatus status, BigDecimal credit_max, Duration credit_interval) {
+        this.account_id = account_id;
+        this.individual_client_id = individual_client_id;
+        this.entity_client_id = entity_client_id;
+        this.creation_time = creation_time;
+        this.balance = balance;
+        this.serviced_phone_number = serviced_phone_number;
+        this.status = status;
+        this.credit_max = credit_max;
+        this.credit_interval = credit_interval;
     }
 
     public Integer getAccount_id() {
@@ -85,11 +101,11 @@ public class Account {
         this.serviced_phone_number = serviced_phone_number;
     }
 
-    public String getStatus() {
+    public AccountStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatus status) {
         this.status = status;
     }
 
@@ -122,5 +138,13 @@ public class Account {
                 ", credit_max=" + credit_max +
                 ", credit_interval=" + credit_interval +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(account_id, account.account_id) && Objects.equals(individual_client_id, account.individual_client_id) && Objects.equals(entity_client_id, account.entity_client_id) && Objects.equals(creation_time, account.creation_time) && Objects.equals(balance, account.balance) && Objects.equals(serviced_phone_number, account.serviced_phone_number) && Objects.equals(status, account.status) && Objects.equals(credit_max, account.credit_max) && Objects.equals(credit_interval, account.credit_interval);
     }
 }
