@@ -35,14 +35,43 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-/*tasks.register('databaseCreate') {
+tasks.register('create') {
 	group = 'database'
-	doLast {
-		URL[] urls = sourceSets.main.runtimeClasspath.files as URL[]
-		def classloader = new URLClassLoader(urls, null)
-		Class myClass = classloader.load("cmc.sp.webprac.DatabaseInit")
-		def myInstance = myClass.newInstance()
-		Method method = myClass.getMethod("doStuff")
-		method.invoke(myInstance)
+	drop.mustRunAfter ':create'
+	exec {
+		workingDir = "src/main/resources/sql/"
+		executable = 'psql'
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "schema.sql"]
+		standardInput = new ByteArrayInputStream("1234\n".getBytes())
 	}
-}*/
+}
+
+tasks.register('drop') {
+	group = 'database'
+	exec {
+		workingDir = "src/main/resources/sql/"
+		executable = 'psql'
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "drop.sql"]
+		standardInput = new ByteArrayInputStream("1234\n".getBytes())
+	}
+}
+
+tasks.register('populate') {
+	group = 'database'
+	exec {
+		workingDir = "src/main/resources/sql/"
+		executable = 'psql'
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "data.sql"]
+		standardInput = new ByteArrayInputStream("1234\n".getBytes())
+	}
+}
+
+tasks.register('clear') {
+	group = 'database'
+	exec {
+		workingDir = "src/main/resources/sql/"
+		executable = 'psql'
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "clear.sql"]
+		standardInput = new ByteArrayInputStream("1234\n".getBytes())
+	}
+}
