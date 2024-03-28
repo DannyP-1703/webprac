@@ -32,4 +32,38 @@ public class IndividualClientDAOTests extends DAOTests {
         );
         Assertions.assertEquals(expectedClient3, client3);
     }
+
+    @Test
+    void testSave() {
+        IndividualClient expectedClient = new IndividualClient(
+                null,
+                "4035989570",
+                "Гуляева",
+                "Валерия",
+                "Алексеевна",
+                "г. Москва",
+                "+79895556644",
+                "geentbbt94@yahoo.com"
+        );
+        individualClient.save(expectedClient);
+        Assertions.assertEquals(expectedClient, individualClient.getById(6));
+    }
+
+    @Test
+    void testUpdate() {
+        IndividualClient expectedClient = individualClient.getById(3);
+        expectedClient.setContact_phone_number("+79990001122");
+        individualClient.update(expectedClient);
+        Assertions.assertEquals(expectedClient, individualClient.getById(3));
+    }
+
+    @Test
+    void testDelete() {
+        IndividualClient client = individualClient.getById(3);
+        individualClient.delete(client);
+        Assertions.assertNull(individualClient.getById(3));
+
+        individualClient.deleteById(2);
+        Assertions.assertNull(individualClient.getById(2));
+    }
 }

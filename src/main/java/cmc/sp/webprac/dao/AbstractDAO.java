@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -42,4 +43,40 @@ public abstract class AbstractDAO<T, ID extends Serializable> {
         }
     }
 
+    public void save(T entity) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.persist(entity);
+            tx.commit();
+        }
+    }
+
+    public T update(T entity) {
+        T updatedEntity;
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            updatedEntity = session.merge(entity);
+            tx.commit();
+        }
+        return updatedEntity;
+    }
+
+    public void delete(T entity) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.remove(entity);
+            tx.commit();
+        }
+    }
+
+    public void deleteById(ID id) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            T entity = this.getById(id);
+            if (entity != null) {
+                session.remove(entity);
+            }
+            tx.commit();
+        }
+    }
 }
