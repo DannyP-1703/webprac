@@ -58,6 +58,7 @@ tasks.register('drop') {
 
 tasks.register('populate') {
 	group = 'database'
+	clear.mustRunAfter ':populate'
 	exec {
 		workingDir = "src/main/resources/sql/"
 		executable = 'psql'

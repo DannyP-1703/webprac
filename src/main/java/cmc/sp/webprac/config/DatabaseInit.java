@@ -8,14 +8,16 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 
+@Service
 public class DatabaseInit {
-    private final SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     @Autowired
-    public DatabaseInit(LocalSessionFactoryBean sessionFactoryBean) {
+    public void setSessionFactory(LocalSessionFactoryBean sessionFactoryBean) {
         this.sessionFactory = sessionFactoryBean.getObject();
     }
 

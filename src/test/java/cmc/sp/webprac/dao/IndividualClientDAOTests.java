@@ -9,13 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @SpringBootTest
-public class IndividualClientDAOTests {
+public class IndividualClientDAOTests extends DAOTests {
+
     @Autowired
     private IndividualClientDAO individualClient;
 
     @Test
-    void testGetter() {
+    void testGetters() {
         List<IndividualClient> allIndividualClients = individualClient.getAll();
-        Assertions.assertEquals(0, allIndividualClients.size());
+        Assertions.assertEquals(5, allIndividualClients.size());
+
+        IndividualClient client3 = individualClient.getById(3);
+        IndividualClient expectedClient3 = new IndividualClient(
+                3,
+                "4035759570",
+                "Гуляева",
+                "Ксения",
+                "Даниловна",
+                "респ. Татарстан",
+                "+74997714077",
+                "geentbbt94@yahoo.com"
+        );
+        Assertions.assertEquals(expectedClient3, client3);
     }
 }
