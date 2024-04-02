@@ -1,12 +1,11 @@
 package cmc.sp.webprac.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@Entity
+@Table(name="entity_client")
 public class EntityClient {
     @Id
     @Column(nullable = false)
@@ -153,6 +152,15 @@ public class EntityClient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityClient that = (EntityClient) o;
-        return Objects.equals(client_id, that.client_id) && Objects.equals(registration_number, that.registration_number) && Objects.equals(name, that.name) && Objects.equals(region, that.region) && Objects.equals(address, that.address) && Objects.equals(contact_surname, that.contact_surname) && Objects.equals(contact_name, that.contact_name) && Objects.equals(contact_patronymic, that.contact_patronymic) && Objects.equals(contact_phone_number, that.contact_phone_number) && Objects.equals(email, that.email);
+        return Objects.equals(client_id, that.client_id)
+                && Objects.equals(registration_number, that.registration_number)
+                && Objects.equals(name, that.name)
+                && Objects.equals(region, that.region)
+                && Objects.equals(address, that.address)
+                && Objects.equals(contact_surname, that.contact_surname)
+                && Objects.equals(contact_name, that.contact_name)
+                && Objects.equals(contact_patronymic, that.contact_patronymic)
+                && Objects.equals(contact_phone_number, that.contact_phone_number)
+                && Objects.equals(email, that.email);
     }
 }
