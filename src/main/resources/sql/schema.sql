@@ -22,18 +22,18 @@ CREATE TABLE entity_client (
   email VARCHAR(100)
 );
 
-CREATE TYPE ACCOUNT_STATUS AS ENUM ('Активен', 'Заблокирован', 'Закрыт');
+CREATE TYPE ACCOUNT_STATUS AS ENUM ('ACTIVE', 'BLOCKED', 'CLOSED');
 CREATE TYPE OPERATION_TYPE AS ENUM (
-    'Пополнение',
-    'Подключение услуги',
-    'Абонентская плата',
-    'Отключение услуги',
-    'Открытие счёта',
-    'Блокировка счёта',
-    'Разблокировка счёта',
-    'Закрытие счёта'
+    'TOPUP',
+    'SERVICE_CONNECT',
+    'SERVICE_SUBSCRIPTION',
+    'SERVICE_DISCONNECT',
+    'ACCOUNT_OPEN',
+    'ACCOUNT_BLOCK',
+    'ACCOUNT_UNBLOCK',
+    'ACCOUNT_CLOSE'
 );
-CREATE TYPE SUBSCRIPTION_TYPE AS ENUM ('Без а/п', 'Ежедневно', 'Ежемесячно', 'Ежегодно');
+CREATE TYPE SUBSCRIPTION_TYPE AS ENUM ('ONETIME', 'DAILY', 'MONTHLY', 'ANNUAL');
 
 CREATE TABLE account (
   account_id SERIAL PRIMARY KEY,
@@ -61,8 +61,8 @@ CREATE TABLE service (
   package_message SMALLINT,     -- in pieces
   description TEXT,
   CONSTRAINT subscription_type_check CHECK (
-    NOT (subscription_type = 'Без а/п') OR (activation_fee IS NOT NULL) AND
-    NOT (subscription_type IN ('Ежедневно', 'Ежемесячно', 'Ежегодно')) OR (subscription_fee IS NOT NULL)
+    NOT (subscription_type = 'ONETIME') OR (activation_fee IS NOT NULL) AND
+    NOT (subscription_type IN ('DAILY', 'MONTHLY', 'ANNUAL')) OR (subscription_fee IS NOT NULL)
   )
 );
 
@@ -83,7 +83,7 @@ CREATE TABLE operation (
   money_amount NUMERIC,
   service_id INT REFERENCES service (service_id) ON DELETE CASCADE,
   UNIQUE (operation_time, account_id, service_id),
-  CHECK ( ("type" IN ('Подключение услуги','Абонентская плата','Отключение услуги')) = (service_id IS NOT NULL) )
+  CHECK ( ("type" IN ('SERVICE_CONNECT','SERVICE_SUBSCRIPTION','SERVICE_DISCONNECT')) = (service_id IS NOT NULL) )
 );
 
 -- -- -- TRIGGERS -- -- --
@@ -91,11 +91,11 @@ CREATE TABLE operation (
 
 CREATE FUNCTION check_account_status() RETURNS trigger AS $$
     BEGIN
-        IF (TG_OP = 'INSERT' AND NEW.status <> 'Активен') THEN
+        IF (TG_OP = 'INSERT' AND NEW.status <> 'ACTIVE') THEN
             RAISE 'Невозможно создать новый счёт, статус которого %', NEW.status;
         END IF;
 
-        IF (TG_OP = 'UPDATE' AND OLD.status = 'Закрыт') THEN
+        IF (TG_OP = 'UPDATE' AND OLD.status = 'CLOSED') THEN
             RAISE 'Невозможно произвести действия с закрытым счётом';
         END IF;
 
@@ -112,17 +112,17 @@ CREATE FUNCTION log_account_status() RETURNS trigger AS $$
     BEGIN
         IF (TG_OP = 'INSERT') THEN
             INSERT INTO operation VALUES
-                (DEFAULT, NEW.creation_time, NEW.account_id, 'Открытие счёта', NULL, NULL);
+                (DEFAULT, NEW.creation_time, NEW.account_id, 'ACCOUNT_OPEN', NULL, NULL);
         ELSIF (NEW.status != OLD.status) THEN
-            IF (NEW.status = 'Заблокирован') THEN
+            IF (NEW.status = 'BLOCKED') THEN
                 INSERT INTO operation VALUES
-                    (DEFAULT, NOW(), NEW.account_id, 'Блокировка счёта', NULL, NULL);
-            ELSIF (NEW.status = 'Закрыт') THEN
+                    (DEFAULT, NOW(), NEW.account_id, 'ACCOUNT_BLOCK', NULL, NULL);
+            ELSIF (NEW.status = 'CLOSED') THEN
                 INSERT INTO operation VALUES
-                    (DEFAULT, NOW(), NEW.account_id, 'Закрытие счёта', NULL, NULL);
-            ELSIF (NEW.status = 'Активен') THEN
+                    (DEFAULT, NOW(), NEW.account_id, 'ACCOUNT_CLOSE', NULL, NULL);
+            ELSIF (NEW.status = 'ACTIVE') THEN
                 INSERT INTO operation VALUES
-                    (DEFAULT, NOW(), NEW.account_id, 'Разблокировка счёта', NULL, NULL);
+                    (DEFAULT, NOW(), NEW.account_id, 'ACCOUNT_UNBLOCK', NULL, NULL);
              END IF;
         END IF;
 
@@ -134,16 +134,16 @@ CREATE FUNCTION log_account_balance() RETURNS trigger AS $$
     BEGIN
         IF (TG_OP = 'INSERT' AND NEW.balance <> 0) THEN
             INSERT INTO operation VALUES
-                (DEFAULT, NEW.creation_time, NEW.account_id, 'Пополнение', NEW.balance, NULL);
+                (DEFAULT, NEW.creation_time, NEW.account_id, 'TOPUP', NEW.balance, NULL);
         END IF;
 
         IF (TG_OP = 'UPDATE' AND NEW.balance - OLD.balance > 0) THEN
             INSERT INTO operation VALUES
-                (DEFAULT, NOW(), NEW.account_id, 'Пополнение', NEW.balance - OLD.balance, NULL);
+                (DEFAULT, NOW(), NEW.account_id, 'TOPUP', NEW.balance - OLD.balance, NULL);
         END IF;
 
         IF (NEW.balance < -NEW.credit_max) THEN
-            UPDATE account SET status = 'Заблокирован' WHERE account_id = NEW.account_id;
+            UPDATE account SET status = 'BLOCKED' WHERE account_id = NEW.account_id;
         END IF;
 
         RETURN NULL;
@@ -166,13 +166,13 @@ CREATE FUNCTION log_service_connection() RETURNS trigger AS $$
     BEGIN
         IF (TG_OP = 'INSERT') THEN
             INSERT INTO operation VALUES
-                (DEFAULT, NEW.connection_time, NEW.account_id, 'Подключение услуги', (SELECT activation_fee FROM service WHERE service_id = NEW.service_id), NEW.service_id);
+                (DEFAULT, NEW.connection_time, NEW.account_id, 'SERVICE_CONNECT', (SELECT activation_fee FROM service WHERE service_id = NEW.service_id), NEW.service_id);
             UPDATE account SET balance = balance - (SELECT activation_fee FROM service WHERE service_id = NEW.service_id) WHERE account_id = NEW.account_id;
         END IF;
 
         IF (TG_OP = 'DELETE') THEN
             INSERT INTO operation VALUES
-                (DEFAULT, NOW(), OLD.account_id, 'Отключение услуги', (SELECT deactivation_fee FROM service WHERE service_id = OLD.service_id), OLD.service_id);
+                (DEFAULT, NOW(), OLD.account_id, 'SERVICE_DISCONNECT', (SELECT deactivation_fee FROM service WHERE service_id = OLD.service_id), OLD.service_id);
             UPDATE account SET balance = balance - (SELECT deactivation_fee FROM service WHERE service_id = OLD.service_id) WHERE account_id = OLD.account_id;
         END IF;
 

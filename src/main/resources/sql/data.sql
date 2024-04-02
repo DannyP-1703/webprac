@@ -26,20 +26,20 @@ INSERT INTO entity_client (registration_number, name, region, address, contact_s
 
 
 INSERT INTO service (name, subscription_type, activation_fee, subscription_fee, deactivation_fee, duration, package_phone, package_internet, package_message, description) VALUES
-('Тариф "Выгодный"', 'Ежемесячно', '10', '580', '10', NULL, '1000', '65', '300', ''),
-('"Больше интернета"', 'Без а/п', '150', NULL, NULL, '1 month', NULL, '20', NULL, 'Дополнительный пакет интернета'),
-('Музыка', 'Ежедневно', '0', '8', '0', NULL, NULL, NULL, NULL, 'Подключение к музыкальному стриминговому сервису от Yandex');
+('Тариф "Выгодный"', 'MONTHLY', '10', '580', '10', NULL, '1000', '65', '300', ''),
+('"Больше интернета"', 'ONETIME', '150', NULL, NULL, '1 month', NULL, '20', NULL, 'Дополнительный пакет интернета'),
+('Музыка', 'DAILY', '0', '8', '0', NULL, NULL, NULL, NULL, 'Подключение к музыкальному стриминговому сервису от Yandex');
 
 INSERT INTO account (individual_client_id, entity_client_id, creation_time, balance, serviced_phone_number, status, credit_max, credit_interval) VALUES
-('3', NULL, '2014-07-02 23:49:55', '87', '+79824287044', 'Активен', '1000', NULL),
-('1', NULL, '2018-01-28 16:31:47', '45', '+79827996472', 'Активен', '100', NULL),
-('3', NULL, '2019-10-18 00:46:09', '0', '+79829846190', 'Активен', '100', NULL),  -- зак
-(NULL, '2', '2021-03-16 19:51:59', '0', '+79823448263', 'Активен', '100', NULL),  -- зак
-('5', NULL, '2022-10-07 08:55:45', '0', '+79828325935', 'Активен', '500', '1 month'), -- -50
-(NULL, '5', '2022-12-22 15:43:50', '1000', '+79821702152', 'Активен', '100', NULL),
-(NULL, '4', '2023-08-20 09:11:07', '0', '+79825886899', 'Активен', '50', NULL);  -- заб -100
+('3', NULL, '2014-07-02 23:49:55', '87', '+79824287044', 'ACTIVE', '1000', NULL),
+('1', NULL, '2018-01-28 16:31:47', '45', '+79827996472', 'ACTIVE', '100', NULL),
+('3', NULL, '2019-10-18 00:46:09', '0', '+79829846190', 'ACTIVE', '100', NULL),  -- зак
+(NULL, '2', '2021-03-16 19:51:59', '0', '+79823448263', 'ACTIVE', '100', NULL),  -- зак
+('5', NULL, '2022-10-07 08:55:45', '0', '+79828325935', 'ACTIVE', '500', '1 month'), -- -50
+(NULL, '5', '2022-12-22 15:43:50', '1000', '+79821702152', 'ACTIVE', '100', NULL),
+(NULL, '4', '2023-08-20 09:11:07', '0', '+79825886899', 'ACTIVE', '50', NULL);  -- заб -100
 
-UPDATE account SET status = 'Закрыт' WHERE account_id IN (3, 4);
+UPDATE account SET status = 'CLOSED' WHERE account_id IN (3, 4);
 UPDATE account SET balance = balance - 50 WHERE account_id = 5;
 UPDATE account SET balance = balance - 100 WHERE account_id = 7;
 
