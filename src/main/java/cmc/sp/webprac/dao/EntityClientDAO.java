@@ -2,46 +2,44 @@ package cmc.sp.webprac.dao;
 
 import cmc.sp.webprac.enums.AccountStatus;
 import cmc.sp.webprac.filters.ClientFilter;
-import cmc.sp.webprac.models.IndividualClient;
+import cmc.sp.webprac.models.EntityClient;
 import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class IndividualClientDAO extends AbstractDAO<IndividualClient, Integer> {
-    public IndividualClientDAO() {
-        super(IndividualClient.class);
+public class EntityClientDAO extends AbstractDAO<EntityClient, Integer> {
+    public EntityClientDAO() {
+        super(EntityClient.class);
     }
 
-    public Timestamp getRegistrationTime(IndividualClient client) {
+    public Timestamp getRegistrationTime(EntityClient client) {
         Timestamp registrationTime = Timestamp.valueOf("9999-12-12 23:59:59");
         for (var acc : client.getAccounts()) {
-            if (registrationTime.compareTo(acc.getCreation_time()) >= 0) {
+            if (acc.getCreation_time().compareTo(registrationTime) < 0) {
                 registrationTime = acc.getCreation_time();
             }
         }
         return registrationTime;
     }
 
-    public List<IndividualClient> getFiltered(ClientFilter filter) {
+    public List<EntityClient> getFiltered(ClientFilter filter) {
         try(Session session = sessionFactory.openSession()) {
             CriteriaBuilder cBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<IndividualClient> criteria = cBuilder.createQuery(modelClass);
+            var criteria = cBuilder.createQuery(modelClass);
             var root = criteria.from(modelClass);
 
             List<Predicate> predicates = new ArrayList<>();
             if (filter.getPartOfName() != null) {
-                predicates.add(cBuilder.like(root.get("fullName"), "%" + filter.getPartOfName() + "%"));
+                predicates.add(cBuilder.like(root.get("name"), "%" + filter.getPartOfName() + "%"));
             }
             if (filter.getStartOfRegistrationNumber() != null) {
-                predicates.add(cBuilder.like(root.get("passport"), filter.getStartOfRegistrationNumber() + "%"));
+                predicates.add(cBuilder.like(root.get("registration_number"), filter.getStartOfRegistrationNumber() + "%"));
             }
             if (filter.getRegion() != null) {
                 predicates.add(cBuilder.like(root.get("region"), "%" + filter.getRegion() + "%"));
@@ -87,6 +85,5 @@ public class IndividualClientDAO extends AbstractDAO<IndividualClient, Integer> 
 
             return filteredClients;
         }
-
     }
 }
