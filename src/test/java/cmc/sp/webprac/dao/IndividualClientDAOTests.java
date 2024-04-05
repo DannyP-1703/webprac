@@ -1,69 +1,86 @@
 package cmc.sp.webprac.dao;
 
+import cmc.sp.webprac.filters.ClientFilter;
 import cmc.sp.webprac.models.IndividualClient;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
 public class IndividualClientDAOTests extends DAOTests {
 
-    @Autowired
-    private IndividualClientDAO individualClient;
-
     @Test
-    void testGetters() {
-        List<IndividualClient> allIndividualClients = individualClient.getAll();
-        Assertions.assertEquals(5, allIndividualClients.size());
-
-        IndividualClient client3 = individualClient.getById(3);
-        IndividualClient expectedClient3 = new IndividualClient(
-                3,
-                "4035759570",
-                "Гуляева",
-                "Ксения",
-                "Даниловна",
-                "респ. Татарстан",
-                "+74997714077",
-                "geentbbt94@yahoo.com"
+    void testGetAccounts() {
+        Assertions.assertEquals(
+                List.of(account.getById(3), account.getById(1)),
+                individualClient.getById(3).getAccounts()
         );
-        Assertions.assertEquals(expectedClient3, client3);
     }
 
+
     @Test
-    void testSave() {
-        IndividualClient expectedClient = new IndividualClient(
-                null,
-                "4035989570",
-                "Гуляева",
-                "Валерия",
-                "Алексеевна",
-                "г. Москва",
-                "+79895556644",
-                "geentbbt94@yahoo.com"
+    void testRegistrationTime() {
+        Assertions.assertEquals(
+                Timestamp.valueOf("2022-10-07 08:55:45"),
+                individualClient.getRegistrationTime(individualClient.getById(5))
         );
-        individualClient.save(expectedClient);
-        Assertions.assertEquals(expectedClient, individualClient.getById(6));
     }
 
     @Test
-    void testUpdate() {
-        IndividualClient expectedClient = individualClient.getById(3);
-        expectedClient.setContact_phone_number("+79990001122");
-        individualClient.update(expectedClient);
-        Assertions.assertEquals(expectedClient, individualClient.getById(3));
-    }
+    void testFilter() {
+        Assertions.assertEquals(
+                List.of(individualClient.getById(2)),
+                individualClient.getFiltered(
+                        new ClientFilter.Builder(true, false)
+                        .partOfName("Макарович")
+                        .startOfRegistrationNumber("451")
+                        .region("Москва")
+                        .build()
+                )
+        );
 
-    @Test
-    void testDelete() {
-        IndividualClient client = individualClient.getById(3);
-        individualClient.delete(client);
-        Assertions.assertNull(individualClient.getById(3));
+        Assertions.assertEquals(
+                List.of(individualClient.getById(2)),
+                individualClient.getFiltered(
+                        new ClientFilter.Builder(true, false)
+                                .partOfName("Макарович")
+                                .startOfRegistrationNumber("451")
+                                .region("Москва")
+                                .build()
+                )
+        );
 
-        individualClient.deleteById(2);
-        Assertions.assertNull(individualClient.getById(2));
+        Assertions.assertEquals(
+                0,
+                individualClient.getFiltered(
+                        new ClientFilter.Builder(true, false)
+                                .hasBlockedAccounts(true)
+                                .build()
+                ).size()
+        );
+
+        Assertions.assertEquals(
+                List.of(individualClient.getById(3)),
+                individualClient.getFiltered(
+                        new ClientFilter.Builder(true, false)
+                                .numberOfAccounts(2, 2)
+                                .build()
+                )
+        );
+
+        Assertions.assertEquals(
+                List.of(individualClient.getById(1)),
+                individualClient.getFiltered(
+                        new ClientFilter.Builder(true, false)
+                                .clientSince(Timestamp.valueOf("2018-01-01 00:00:00"), Timestamp.valueOf("2020-12-31 23:59:59"))
+                                .build()
+                )
+        );
     }
 }

@@ -11,6 +11,24 @@ public class DAOTests {
     @Autowired
     private DatabaseInit manager;
 
+    @Autowired
+    protected AccountDAO account;
+
+    @Autowired
+    protected IndividualClientDAO individualClient;
+
+    @Autowired
+    protected EntityClientDAO entityClient;
+
+    @Autowired
+    protected ServiceDAO service;
+
+    @Autowired
+    protected OperationDAO operation;
+
+    @Autowired
+    protected ConnectedServicesDAO connectedServices;
+
     @BeforeEach
     void repopulateTestDatabase() {
         manager.clear();
