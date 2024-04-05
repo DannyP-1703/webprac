@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,9 +17,13 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer account_id;
 
-    private Integer individual_client_id;
+    @ManyToOne
+    @JoinColumn(name="individual_client_id", referencedColumnName="client_id")
+    private IndividualClient individual_client;
 
-    private Integer entity_client_id;
+    @ManyToOne
+    @JoinColumn(name="entity_client_id", referencedColumnName="client_id")
+    private EntityClient entity_client;
 
     @Column(nullable = false)
     private Timestamp creation_time;
@@ -38,13 +43,16 @@ public class Account {
     @Column(name = "credit_interval", columnDefinition = "interval")
     private Duration credit_interval;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private List<ConnectedServices> connectedServices;
+
     public Account() {
     }
 
-    public Account(Integer account_id, Integer individual_client_id, Integer entity_client_id, Timestamp creation_time, BigDecimal balance, String serviced_phone_number, AccountStatus status, BigDecimal credit_max, Duration credit_interval) {
+    public Account(Integer account_id, IndividualClient individual_client, EntityClient entity_client, Timestamp creation_time, BigDecimal balance, String serviced_phone_number, AccountStatus status, BigDecimal credit_max, Duration credit_interval) {
         this.account_id = account_id;
-        this.individual_client_id = individual_client_id;
-        this.entity_client_id = entity_client_id;
+        this.individual_client = individual_client;
+        this.entity_client = entity_client;
         this.creation_time = creation_time;
         this.balance = balance;
         this.serviced_phone_number = serviced_phone_number;
@@ -61,20 +69,20 @@ public class Account {
         this.account_id = account_id;
     }
 
-    public Integer getIndividual_client_id() {
-        return individual_client_id;
+    public IndividualClient getIndividual_client() {
+        return individual_client;
     }
 
-    public void setIndividual_client_id(Integer individual_client_id) {
-        this.individual_client_id = individual_client_id;
+    public void setIndividual_client(IndividualClient individual_client) {
+        this.individual_client = individual_client;
     }
 
-    public Integer getEntity_client_id() {
-        return entity_client_id;
+    public EntityClient getEntity_client() {
+        return entity_client;
     }
 
-    public void setEntity_client_id(Integer entity_client_id) {
-        this.entity_client_id = entity_client_id;
+    public void setEntity_client(EntityClient entity_client) {
+        this.entity_client = entity_client;
     }
 
     public Timestamp getCreation_time() {
@@ -125,12 +133,16 @@ public class Account {
         this.credit_interval = credit_interval;
     }
 
+    public List<ConnectedServices> getConnectedServices() {
+        return connectedServices;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "account_id=" + account_id +
-                ", individual_client_id=" + individual_client_id +
-                ", entity_client_id=" + entity_client_id +
+                ", individual_client" + individual_client +
+                ", entity_client=" + entity_client +
                 ", creation_time=" + creation_time +
                 ", balance=" + balance +
                 ", serviced_phone_number='" + serviced_phone_number + '\'' +
@@ -145,6 +157,14 @@ public class Account {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return Objects.equals(account_id, account.account_id) && Objects.equals(individual_client_id, account.individual_client_id) && Objects.equals(entity_client_id, account.entity_client_id) && Objects.equals(creation_time, account.creation_time) && Objects.equals(balance, account.balance) && Objects.equals(serviced_phone_number, account.serviced_phone_number) && Objects.equals(status, account.status) && Objects.equals(credit_max, account.credit_max) && Objects.equals(credit_interval, account.credit_interval);
+        return Objects.equals(account_id, account.account_id)
+                && Objects.equals(individual_client, account.individual_client)
+                && Objects.equals(entity_client, account.entity_client)
+                && Objects.equals(creation_time, account.creation_time)
+                && Objects.equals(balance, account.balance)
+                && Objects.equals(serviced_phone_number, account.serviced_phone_number)
+                && Objects.equals(status, account.status)
+                && Objects.equals(credit_max, account.credit_max)
+                && Objects.equals(credit_interval, account.credit_interval);
     }
 }

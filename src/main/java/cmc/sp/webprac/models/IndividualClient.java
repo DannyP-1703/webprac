@@ -1,7 +1,9 @@
 package cmc.sp.webprac.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +26,9 @@ public class IndividualClient {
     @Column(columnDefinition = "VARCHAR[100]")
     private String patronymic;
 
+    @Formula(value = "concat(surname, ' ', name, ' ', patronymic)")
+    private String fullName;
+
     @Column(nullable = false, columnDefinition = "VARCHAR[100]")
     private String region;
 
@@ -32,6 +37,9 @@ public class IndividualClient {
 
     @Column(columnDefinition = "VARCHAR[100]")
     private String email;
+
+    @OneToMany(mappedBy = "individual_client", fetch = FetchType.EAGER)
+    private List<Account> accounts;
 
     public IndividualClient() {
     }
@@ -42,9 +50,11 @@ public class IndividualClient {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
+        this.fullName = surname + ' ' + name + ' ' + patronymic;
         this.region = region;
         this.contact_phone_number = contact_phone_number;
         this.email = email;
+        this.accounts = null;
     }
 
     public Integer getClient_id() {
@@ -87,6 +97,10 @@ public class IndividualClient {
         this.patronymic = patronymic;
     }
 
+    public String getFullName() {
+        return this.fullName;
+    }
+
     public String getRegion() {
         return region;
     }
@@ -109,6 +123,10 @@ public class IndividualClient {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Account> getAccounts() {
+        return this.accounts;
     }
 
     @Override

@@ -13,11 +13,13 @@ public class ConnectedServices {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer connection_id;
 
-    @Column(nullable = false)
-    private Integer account_id;
+    @ManyToOne
+    @JoinColumn(nullable = false, name="account_id")
+    private Account account;
 
-    @Column(nullable = false)
-    private Integer service_id;
+    @ManyToOne
+    @JoinColumn(nullable = false, name="service_id")
+    private Service service;
 
     @Column(nullable = false)
     private Timestamp connection_time;
@@ -25,10 +27,10 @@ public class ConnectedServices {
     public ConnectedServices() {
     }
 
-    public ConnectedServices(Integer connection_id, Integer account_id, Integer service_id, Timestamp connection_time) {
+    public ConnectedServices(Integer connection_id, Account account, Service service, Timestamp connection_time) {
         this.connection_id = connection_id;
-        this.account_id = account_id;
-        this.service_id = service_id;
+        this.account = account;
+        this.service = service;
         this.connection_time = connection_time;
     }
 
@@ -40,20 +42,20 @@ public class ConnectedServices {
         this.connection_id = connection_id;
     }
 
-    public Integer getAccount_id() {
-        return account_id;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccount_id(Integer account_id) {
-        this.account_id = account_id;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
-    public Integer getService_id() {
-        return service_id;
+    public Service getService() {
+        return service;
     }
 
-    public void setService_id(Integer service_id) {
-        this.service_id = service_id;
+    public void setService(Service service) {
+        this.service = service;
     }
 
     public Timestamp getConnection_time() {
@@ -68,8 +70,8 @@ public class ConnectedServices {
     public String toString() {
         return "ConnectedServices{" +
                 "connection_id=" + connection_id +
-                ", account_id=" + account_id +
-                ", service_id=" + service_id +
+                ", account=" + account +
+                ", service=" + service +
                 ", connection_time=" + connection_time +
                 '}';
     }
@@ -79,6 +81,9 @@ public class ConnectedServices {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConnectedServices that = (ConnectedServices) o;
-        return Objects.equals(connection_id, that.connection_id) && Objects.equals(account_id, that.account_id) && Objects.equals(service_id, that.service_id) && Objects.equals(connection_time, that.connection_time);
+        return Objects.equals(connection_id, that.connection_id)
+                && Objects.equals(account, that.account)
+                && Objects.equals(service, that.service)
+                && Objects.equals(connection_time, that.connection_time);
     }
 }

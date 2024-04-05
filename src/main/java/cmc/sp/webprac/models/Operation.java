@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.util.Objects;
 
 @Entity
@@ -19,28 +18,30 @@ public class Operation {
     @Column(nullable = false)
     private Timestamp operation_time;
 
-    @Column(nullable = false)
-    private Integer account_id;
+    @ManyToOne
+    @JoinColumn(name="account_id", nullable = false)
+    private Account account;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OperationType type;
 
-    @Column(nullable = true)
     private BigDecimal money_amount;
 
-    private Integer service_id;
+    @ManyToOne
+    @JoinColumn(name="service_id")
+    private Service service;
 
     public Operation() {
     }
 
-    public Operation(Integer operation_id, Timestamp operation_time, Integer account_id, OperationType type, BigDecimal money_amount, Integer service_id) {
+    public Operation(Integer operation_id, Timestamp operation_time, Account account, OperationType type, BigDecimal money_amount, Service service) {
         this.operation_id = operation_id;
         this.operation_time = operation_time;
-        this.account_id = account_id;
+        this.account = account;
         this.type = type;
         this.money_amount = money_amount;
-        this.service_id = service_id;
+        this.service = service;
     }
 
     public Integer getOperation_id() {
@@ -59,12 +60,12 @@ public class Operation {
         this.operation_time = operation_time;
     }
 
-    public Integer getAccount_id() {
-        return account_id;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccount_id(Integer account_id) {
-        this.account_id = account_id;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public OperationType getType() {
@@ -83,12 +84,12 @@ public class Operation {
         this.money_amount = money_amount;
     }
 
-    public Integer getService_id() {
-        return service_id;
+    public Service getService() {
+        return service;
     }
 
-    public void setService_id(Integer service_id) {
-        this.service_id = service_id;
+    public void setService(Service service) {
+        this.service = service;
     }
 
     @Override
@@ -96,10 +97,10 @@ public class Operation {
         return "Operation{" +
                 "operation_id=" + operation_id +
                 ", operation_time=" + operation_time +
-                ", account_id=" + account_id +
+                ", account=" + account +
                 ", type='" + type + '\'' +
                 ", money_amount=" + money_amount +
-                ", service_id=" + service_id +
+                ", service=" + service +
                 '}';
     }
 
@@ -108,6 +109,11 @@ public class Operation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Operation operation = (Operation) o;
-        return Objects.equals(operation_id, operation.operation_id) && Objects.equals(operation_time, operation.operation_time) && Objects.equals(account_id, operation.account_id) && type == operation.type && Objects.equals(money_amount, operation.money_amount) && Objects.equals(service_id, operation.service_id);
+        return Objects.equals(operation_id, operation.operation_id)
+                && Objects.equals(operation_time, operation.operation_time)
+                && Objects.equals(account, operation.account)
+                && type == operation.type
+                && Objects.equals(money_amount, operation.money_amount)
+                && Objects.equals(service, operation.service);
     }
 }

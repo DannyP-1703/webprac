@@ -2,6 +2,7 @@ package cmc.sp.webprac.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -39,6 +40,9 @@ public class EntityClient {
     @Column(columnDefinition = "VARCHAR[100]")
     private String email;
 
+    @OneToMany(mappedBy = "entity_client", fetch = FetchType.EAGER)
+    private List<Account> accounts;
+
     public EntityClient() {
     }
 
@@ -53,6 +57,7 @@ public class EntityClient {
         this.contact_patronymic = contact_patronymic;
         this.contact_phone_number = contact_phone_number;
         this.email = email;
+        this.accounts = null;
     }
 
     public Integer getClient_id() {
@@ -133,6 +138,10 @@ public class EntityClient {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
     @Override
