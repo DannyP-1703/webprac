@@ -33,6 +33,5 @@ public class DAOTests {
     void repopulateTestDatabase() {
         manager.clear();
         manager.populate();
-        System.out.println("Repopulating");
     }
 }

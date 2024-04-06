@@ -1,6 +1,5 @@
 package cmc.sp.webprac.config;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.sql.exec.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
