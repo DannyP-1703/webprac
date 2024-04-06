@@ -2,6 +2,9 @@ package cmc.sp.webprac.models;
 
 import cmc.sp.webprac.enums.SubscriptionType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.hibernate.dialect.PostgreSQLIntervalSecondJdbcType;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -20,6 +23,7 @@ public class Service {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private SubscriptionType subscription_type;
 
     private BigDecimal activation_fee;
@@ -29,6 +33,7 @@ public class Service {
     private BigDecimal deactivation_fee;
 
     @Column(columnDefinition = "interval")
+    @JdbcType(PostgreSQLIntervalSecondJdbcType.class)
     private Duration duration;
 
     private Short package_phone;

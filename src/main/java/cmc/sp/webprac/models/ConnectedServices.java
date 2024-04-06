@@ -70,8 +70,8 @@ public class ConnectedServices {
     public String toString() {
         return "ConnectedServices{" +
                 "connection_id=" + connection_id +
-                ", account=" + account +
-                ", service=" + service +
+                ", account_id=" + account.getAccount_id() +
+                ", service_id=" + service.getService_id() +
                 ", connection_time=" + connection_time +
                 '}';
     }

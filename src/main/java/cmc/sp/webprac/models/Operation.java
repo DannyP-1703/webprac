@@ -97,10 +97,10 @@ public class Operation {
         return "Operation{" +
                 "operation_id=" + operation_id +
                 ", operation_time=" + operation_time +
-                ", account=" + account +
+                ", account_id=" + account.getAccount_id() +
                 ", type='" + type + '\'' +
                 ", money_amount=" + money_amount +
-                ", service=" + service +
+                ", service_id=" + (service == null ? null : service.getService_id()) +
                 '}';
     }
 

@@ -141,8 +141,8 @@ public class Account {
     public String toString() {
         return "Account{" +
                 "account_id=" + account_id +
-                ", individual_client" + individual_client +
-                ", entity_client=" + entity_client +
+                ", individual_client_id" + (individual_client == null ? null : individual_client.getClient_id()) +
+                ", entity_client_id=" + (entity_client == null ? null : entity_client.getClient_id()) +
                 ", creation_time=" + creation_time +
                 ", balance=" + balance +
                 ", serviced_phone_number='" + serviced_phone_number + '\'' +
