@@ -41,9 +41,9 @@ public class DatabaseConfig {
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.setProperty("hibernate.show_sql", "true");
-        properties.setProperty("hibernate.format_sql", "true");
-        properties.setProperty("hibernate.highlight_sql", "true");
+//        properties.setProperty("hibernate.show_sql", "true");
+//        properties.setProperty("hibernate.format_sql", "true");
+//        properties.setProperty("hibernate.highlight_sql", "true");
 
         sessionFactoryBean.setHibernateProperties(properties);
         return sessionFactoryBean;
