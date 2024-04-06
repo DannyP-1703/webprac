@@ -3,7 +3,6 @@ package cmc.sp.webprac.filters;
 import cmc.sp.webprac.enums.SubscriptionType;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
 public class ServiceFilter {
@@ -23,16 +22,21 @@ public class ServiceFilter {
         }
     }
     public static class Builder {
-        private final List<SubscriptionType> subscriptionTypes;
+        private List<SubscriptionType> subscriptionTypes = List.of(
+                SubscriptionType.MONTHLY, SubscriptionType.ONETIME, SubscriptionType.DAILY, SubscriptionType.ANNUAL
+        );
         private String searchText = null;
         private SubscriptionFee subscriptionFee = null;
 
-        public Builder(List<SubscriptionType> subscriptionTypes) {
-            this.subscriptionTypes = subscriptionTypes;
-        }
+        public Builder() {}
 
         public ServiceFilter build() {
             return new ServiceFilter(this);
+        }
+
+        public Builder subscriptionTypes(List<SubscriptionType> subscriptionTypes) {
+            this.subscriptionTypes = subscriptionTypes;
+            return this;
         }
 
         public Builder searchText(String text) {
