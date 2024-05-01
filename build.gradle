@@ -21,6 +21,10 @@ dependencies {
 	implementation 'org.springframework:spring-orm'
 	implementation 'org.postgresql:postgresql'
 
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.thymeleaf:thymeleaf'
+	implementation 'org.thymeleaf:thymeleaf-spring6'
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -41,7 +45,7 @@ tasks.register('create') {
 	exec {
 		workingDir = "src/main/resources/sql/"
 		executable = 'psql'
-		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "schema.sql"]
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac", '-f', "schema.sql"]
 		standardInput = new ByteArrayInputStream("1234\n".getBytes())
 	}
 }
@@ -51,7 +55,7 @@ tasks.register('drop') {
 	exec {
 		workingDir = "src/main/resources/sql/"
 		executable = 'psql'
-		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "drop.sql"]
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac", '-f', "drop.sql"]
 		standardInput = new ByteArrayInputStream("1234\n".getBytes())
 	}
 }
@@ -62,7 +66,7 @@ tasks.register('populate') {
 	exec {
 		workingDir = "src/main/resources/sql/"
 		executable = 'psql'
-		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "data.sql"]
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac", '-f', "data.sql"]
 		standardInput = new ByteArrayInputStream("1234\n".getBytes())
 	}
 }
@@ -72,7 +76,7 @@ tasks.register('clear') {
 	exec {
 		workingDir = "src/main/resources/sql/"
 		executable = 'psql'
-		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac_test", '-f', "clear.sql"]
+		args = ['-U', "postgres", '-h', "localhost", '-d', "webprac", '-f', "clear.sql"]
 		standardInput = new ByteArrayInputStream("1234\n".getBytes())
 	}
 }
