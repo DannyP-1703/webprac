@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить услугу</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+<body>
+<a role="button" class="btn btn-primary btn-lg" href="/services"><< Назад</a>
+<div class="list-group">
+    <form method="post" th:action="@{/saveService}" th:object="${service}">
+        <input type="hidden" th:field="*{service_id}" />
+        <div class="mb-3">
+            <label for="name" class="form-label">Название услуги</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}">
+        </div>
+        <div class="mb-3">
+            <label for="subscription-type" class="form-label">Тип абонентской платы</label>
+            <select id="subscription-type" name="subscription-type" th:field="*{subscription_type}">
+                <option th:each="type : ${T(cmc.sp.webprac.enums.SubscriptionType).values()}"
+                        th:value="${type}" th:text="${type.value()}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="activation-fee" class="form-label">Стоимость подключения</label>
+            <input type="text" class="form-control" id="activation-fee" th:field="*{activation_fee}">
+        </div>
+        <div class="mb-3">
+            <label for="subscription-fee" class="form-label">Стоимость а/п</label>
+            <input type="text" class="form-control" id="subscription-fee" th:field="*{subscription_fee}">
+        </div>
+        <div class="mb-3">
+            <label for="deactivation-fee" class="form-label">Стоимость отключения</label>
+            <input type="text" class="form-control" id="deactivation-fee" th:field="*{deactivation_fee}">
+        </div>
+        <div class="mb-3">
+            <label for="duration" class="form-label">Продолжительность</label>
+            <input type="text" class="form-control" id="duration" th:field="*{duration}">
+        </div>
+        <div class="mb-3">
+            <label for="package-phone" class="form-label">Пакет мобильной связи (мин)</label>
+            <input type="text" class="form-control" id="package-phone" th:field="*{package_phone}">
+        </div>
+        <div class="mb-3">
+            <label for="package-internet" class="form-label">Пакет интернета (ГБ)</label>
+            <input type="text" class="form-control" id="package-internet" th:field="*{package_internet}">
+        </div>
+        <div class="mb-3">
+            <label for="package-message" class="form-label">Пакет СМС</label>
+            <input type="text" class="form-control" id="package-message" th:field="*{package_message}">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Описание</label>
+            <input type="text" class="form-control" id="description" th:field="*{description}">
+        </div>
+        <button type="submit" class="btn btn-primary" id="save-button">Сохранить</button>
+    </form>
+</div>
+
+</body>
+</html>
