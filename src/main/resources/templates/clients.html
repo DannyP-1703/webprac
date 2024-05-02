@@ -5,44 +5,68 @@
     <title>Управление клиентами</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .main-body {
+            margin-top: 30px;
+            margin-left: 120px;
+            margin-right: 120px;
+            margin-bottom: 150px;
+        }
+        .fixed-bottom {
+            background-color: #90EE90;
+            padding: 20px;
+            padding-left: 120px;
+        }
+    </style>
 </head>
+
+
 <body>
+<div th:replace="general_elements :: page-header"> </div>
 
-<a role="button" class="btn btn-primary btn-lg" href="/add_client">Заключить новый договор</a>
+<div class="main-body">
+    <a role="button" class="btn btn-primary btn-lg" href="/"><< Назад</a>
+    <a role="button" class="btn btn-primary btn-lg" href="/add_client">Заключить новый договор</a>
 
-<div class="mb-3">
-    <label for="account-id" class="form-label">Поиск счёта по номеру</label>
-    <div class="input-group">
-        <input type="text" class="form-control" id="account-id" aria-describedby="button-account-go">
-        <button class="btn btn-outline-secondary" type="button" id="button-account-go">Перейти</button>
+    <div class="mb-3">
+        <label for="account-id" class="form-label">Поиск счёта по номеру</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="account-id" aria-describedby="button-account-go">
+            <button class="btn btn-outline-secondary" type="button" id="button-account-go">Перейти</button>
+        </div>
+        <!--    <div class="form-text" id="basic-addon4">Example help text goes outside the input group.</div>-->
     </div>
-<!--    <div class="form-text" id="basic-addon4">Example help text goes outside the input group.</div>-->
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Лицо</th>
+            <th scope="col">Имя/наименование</th>
+            <th scope="col">Идентификатор</th>
+            <th scope="col">Регион</th>
+            <th scope="col">Телефон</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Счета</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client: ${clients}">
+            <td th:text="${client.getType()}"></td>
+            <td> <a th:href="'/client?client_id=' + ${client.getClient_id()} + '&client_type=' + ${client.getType()}" th:text="${client.getName()}">&nbsp;</a></td>
+            <td th:text="${client.getRegistration_number()}"></td>
+            <td th:text="${client.getRegion()}"></td>
+            <td th:text="${client.getContact_phone_number()}"></td>
+            <td th:text="${client.getEmail()}"></td>
+            <td>
+                <ul class="list-group list-group-flush" th:each="acc: ${client.getAccounts()}">
+                    <li class="list-group-item"> <a th:href="'/account?account_id=' + ${acc.getAccount_id()}" th:text="${acc.getAccount_id()}">&nbsp;</a></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">Лицо</th>
-        <th scope="col">Имя/наименование</th>
-        <th scope="col">Идентификатор</th>
-        <th scope="col">Регион</th>
-        <th scope="col">Телефон</th>
-        <th scope="col">E-mail</th>
-        <th scope="col">Счета</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="client: ${clients}">
-        <td th:text="${client}"/>
-        <td th:text="${client.getName()}"/>
-        <td th:text="${client.getId()}"/>
-        <td th:text="${client.getRegion()}"/>
-        <td th:text="${client.getContactPhone()}"/>
-        <td th:text="${client.getEmail()}"/>
-        <td th:text="${client.getAccounts()}"/>
-    </tr>
-    </tbody>
-</table>
-
+<div th:replace="general_elements :: page-footer"> </div>
 </body>
 </html>
