@@ -16,15 +16,15 @@ public class Client {
     }
 
     enum ClientType {
-        INDIVIDUAL("физ"),
-        ENTITY("юр");
-        private final String value;
+        INDIVIDUAL(0),
+        ENTITY(1);
+        private final Integer value;
 
-        ClientType(String value) {
+        ClientType(Integer value) {
             this.value = value;
         }
 
-        public String value() {
+        public Integer value() {
             return value;
         }
     }
@@ -51,7 +51,7 @@ public class Client {
         this.accounts = entityClient.getAccounts();
     }
 
-    public String getType() {
+    public Integer getType() {
         return type.value();
     }
 

@@ -12,7 +12,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary" th:fragment="page-header">
-    <div class="container-fluid">
+    <div class="container">
         <a class="navbar-brand" href="/index">Биллинговая система</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -33,15 +33,15 @@
     </div>
 </nav>
 
-<div th:fragment="page-footer" class="fixed-bottom">
+<footer th:fragment="page-footer" class="fixed-bottom">
     <p>
         Биллинговая система оператора связи
         <br>
         Панов Данила, 2024
         <br>
-        <a href="https://github.com/DannyP-1703/webprac">GitHub repository</a>
+        <a class="ref-foot" href="https://github.com/DannyP-1703/webprac">GitHub repository</a>
     </p>
-</div>
+</footer>
 
 </body>
 </html>
