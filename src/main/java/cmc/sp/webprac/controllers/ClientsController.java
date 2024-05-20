@@ -5,6 +5,7 @@ import cmc.sp.webprac.dao.IndividualClientDAO;
 import cmc.sp.webprac.models.Client;
 import cmc.sp.webprac.models.EntityClient;
 import cmc.sp.webprac.models.IndividualClient;
+import cmc.sp.webprac.models.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,6 +62,25 @@ public class ClientsController {
     @PostMapping("/update_entity_client")
     String updateEntityClient(@ModelAttribute EntityClient client, Model model) {
         client = entityClient.update(client);
+        return String.format("redirect:/client?client_id=%d&client_type=1", client.getClient_id());
+    }
+
+    @GetMapping("/add_client")
+    String addClient(Model model) {
+        model.addAttribute("individual_client", new IndividualClient());
+        model.addAttribute("entity_client", new EntityClient());
+        return "add_client";
+    }
+
+    @PostMapping("/save_individual_client")
+    String saveIndividualClient(@ModelAttribute IndividualClient client, Model model) {
+        individualClient.save(client);
+        return String.format("redirect:/client?client_id=%d&client_type=0", client.getClient_id());
+    }
+
+    @PostMapping("/save_entity_client")
+    String saveEntityClient(@ModelAttribute EntityClient client, Model model) {
+        entityClient.save(client);
         return String.format("redirect:/client?client_id=%d&client_type=1", client.getClient_id());
     }
 

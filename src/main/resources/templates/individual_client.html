@@ -112,7 +112,9 @@
   <br><br>
   <h2>Список счетов</h2>
 
-  <table class="table">
+  <p th:if="${client.getAccounts().size() == 0}">У клиента не открыто ещё ни одного счёта</p>
+
+  <table class="table" th:if="${client.getAccounts().size() > 0}">
     <thead>
     <tr>
       <th scope="col">Номер</th>

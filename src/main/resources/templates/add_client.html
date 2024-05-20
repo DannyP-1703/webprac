@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить клиента</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f0f8f0;
+        }
+        .main-body {
+            padding-top: 30px;
+            padding-left: 120px;
+            padding-right: 120px;
+            padding-bottom: 150px;
+            background-color: #f0f8f0; /* Основной фон - светло-зеленый */
+            color: #004d00; /* Цвет текста - темно-зеленый */
+        }
+        .fixed-bottom {
+            background-color: #2f4f4f;
+            color: #ffffff;
+            padding: 20px;
+            padding-left: 120px;
+        }
+        .title {
+            text-align: center;
+        }
+        .ref {
+            color: #004d00;
+        }
+        .ref-foot {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="general_elements :: page-header"></div>
+
+<div class="main-body">
+
+    <a role="button" class="btn btn-outline-secondary btn-md" href="/clients"><< Назад</a>
+
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" value="form1" id="radio_individual">
+        <label class="form-check-label" for="radio_individual">
+            Физ. лицо
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" value="form2" id="radio_entity">
+        <label class="form-check-label" for="radio_entity">
+            Юр. лицо
+        </label>
+    </div>
+
+    <div class="hidden" id="form1" hidden>
+        <div class="list-group form-individual" id="form-individual">
+            <form method="post" th:action="@{/save_individual_client}" th:object="${individual_client}">
+                <input type="hidden" th:field="*{client_id}"/>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Фамилия</label>
+                    <input type="text" class="form-control" id="surname" th:field="*{surname}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="patronymic" class="form-label">Отчество</label>
+                    <input type="text" class="form-control" id="patronymic" th:field="*{patronymic}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="region" class="form-label">Регион</label>
+                    <input type="text" class="form-control" id="region" th:field="*{region}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Паспорт</label>
+                    <input type="text" class="form-control" id="passport" th:field="*{passport}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactPhoneNumber" class="form-label">Контактный телефон</label>
+                    <input type="text" class="form-control" id="contactPhoneNumber" th:field="*{contact_phone_number}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" th:field="*{email}">
+                </div>
+
+                <div class="col">
+                    <button type="submit" class="btn btn-success" id="save-button">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="hidden" id="form2" hidden>
+        <div class="list-group form-entity" id="form-entity">
+            <form method="post" th:action="@{/save_entity_client}" th:object="${entity_client}">
+                <input type="hidden" th:field="*{client_id}"/>
+
+                <div class="mb-3">
+                    <label for="registrationNumber" class="form-label">Регистрационный номер</label>
+                    <input type="text" class="form-control" id="registrationNumber" th:field="*{registration_number}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="name_entity" class="form-label">Название</label>
+                    <input type="text" class="form-control" id="name_entity" th:field="*{name}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="region_entity" class="form-label">Регион</label>
+                    <input type="text" class="form-control" id="region_entity" th:field="*{region}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="address_entity" class="form-label">Адрес</label>
+                    <input type="text" class="form-control" id="address_entity" th:field="*{address}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactSurname_entity" class="form-label">Фамилия контактного лица</label>
+                    <input type="text" class="form-control" id="contactSurname_entity" th:field="*{contact_surname}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactName_entity" class="form-label">Имя контактного лица</label>
+                    <input type="text" class="form-control" id="contactName_entity" th:field="*{contact_name}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactPatronymic_entity" class="form-label">Отчество контактного лица</label>
+                    <input type="text" class="form-control" id="contactPatronymic_entity"
+                           th:field="*{contact_patronymic}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactPhoneNumber_entity" class="form-label">Контактный телефон</label>
+                    <input type="text" class="form-control" id="contactPhoneNumber_entity"
+                           th:field="*{contact_phone_number}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email_entity" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email_entity" th:field="*{email}">
+                </div>
+
+                <div class="col">
+                    <button type="submit" class="btn btn-success" id="save-button-entity">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="general_elements :: page-footer"></div>
+
+<script>
+    [].forEach.call(document.getElementsByClassName('form-check-input'), function(radio) {
+        radio.addEventListener('change', function() {
+            form1 = document.getElementById('form1');
+            form2 = document.getElementById('form2');
+            if (this.value == 'form1') {
+                form1.hidden = false;
+                form2.hidden = true;
+            }
+            if (this.value == 'form2') {
+                form1.hidden = true;
+                form2.hidden = false;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
