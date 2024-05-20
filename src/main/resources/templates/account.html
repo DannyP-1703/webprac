@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Счёт</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f0f8f0;
+        }
+        .main-body {
+            padding-top: 30px;
+            padding-left: 120px;
+            padding-right: 120px;
+            padding-bottom: 150px;
+            background-color: #f0f8f0; /* Основной фон - светло-зеленый */
+            color: #004d00; /* Цвет текста - темно-зеленый */
+        }
+        .fixed-bottom {
+            background-color: #2f4f4f;
+            color: #ffffff;
+            padding: 20px;
+            padding-left: 120px;
+        }
+        .title {
+            text-align: center;
+        }
+        .ref {
+            color: #004d00;
+        }
+        .ref-foot {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="general_elements :: page-header"></div>
+
+<div class="main-body">
+
+    <a role="button" class="btn btn-outline-secondary"
+       th:href="'/client?client_id=' + ${client_id} + '&client_type=' + ${client_type}"><< Назад</a>
+
+    <div class="row mt-4">
+        <h1 class="title">Просмотр счёта</h1>
+    </div>
+
+    <div class="list-group">
+        <form method="post" th:action="@{/updateService}" th:object="${account}">
+            <div class="mb-3">
+                <label for="id" class="form-label">Номер счёта</label>
+                <input type="text" class="form-control" id="id" th:field="*{account_id}" disabled>
+            </div>
+            <div class="mb-3" th:if="${account.getIndividual_client() != null}" >
+                <label for="holder_name_individual" class="form-label">Владелец</label>
+                <input type="text" class="form-control"
+                       id="holder_name_individual" th:value="${account.getIndividual_client().getFullName()}" disabled>
+            </div>
+            <div class="mb-3" th:if="${account.getEntity_client() != null}" >
+                <label for="holder_name_entity" class="form-label">Владелец</label>
+                <input type="text" class="form-control"
+                       id="holder_name_entity" th:value="${account.getEntity_client().getName()}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="creation_time" class="form-label">Время создания</label>
+                <input type="text" class="form-control" id="creation_time" th:field="*{creation_time}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="balance" class="form-label">Баланс</label>
+                <input type="text" class="form-control" id="balance" th:field="*{balance}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="serviced_phone_number" class="form-label">Номер обслуживаемого телефона</label>
+                <input type="text" class="form-control" id="serviced_phone_number" th:field="*{serviced_phone_number}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Статус</label> <br>
+                <select id="status" name="status" th:field="*{status}"
+                        th:value="${account.getStatus().value()}" disabled>
+                    <option th:each="type : ${T(cmc.sp.webprac.enums.AccountStatus).values()}"
+                            th:value="${type}" th:text="${type.value()}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="credit_max" class="form-label">Максимальный размер задолженности</label>
+                <input type="text" class="form-control" id="credit_max" th:field="*{credit_max}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="credit_interval" class="form-label">Срок выплаты задолженности</label>
+                <input type="text" class="form-control" id="credit_interval" th:field="*{credit_interval}" disabled>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-success" id="save-button" disabled>Активировать</button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-secondary" id="edit-button">Заблокировать</button>
+                </div>
+                <div class="col">
+                    <a role="button" class="btn btn-outline-danger" id="remove-button"
+                       th:href="'/remove_account?account_id=' + ${account.getAccount_id()}">
+                        Удалить
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <br><br>
+    <h2>Список подключенных услуг</h2>
+
+    <p th:if="${account.getConnectedServices().size() == 0}">К счёту ещё не подключено ни одной услуги</p>
+
+    <table class="table" th:if="${account.getConnectedServices().size() > 0}">
+        <thead>
+        <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Тип а/п</th>
+            <th scope="col">Стоимость а/п</th>
+            <th scope="col">Время подключения</th>
+            <th scope="col"> </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="service: ${account.getConnectedServices()}">
+            <td><a class="ref" th:href="'/service?service_id=' + ${service.getService().getService_id()}"
+                   th:text="${service.getService().getName()}">&nbsp;</a></td>
+            <td th:text="${service.getService().getSubscription_type().value()}"></td>
+            <td th:text="${service.getService().getSubscription_fee()}"></td>
+            <td th:text="${service.getConnection_time()}"></td>
+            <td>
+                <a class="btn btn-danger btn-sm" role="button"
+                   th:href="'/disconnect_service?connection_id=' + ${service.getConnection_id()}">
+                    Отключить
+                </a>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<div th:replace="general_elements :: page-footer"></div>
+</body>
+</html>

@@ -2,6 +2,10 @@ package cmc.sp.webprac.models;
 
 import cmc.sp.webprac.enums.AccountStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.hibernate.dialect.PostgreSQLIntervalSecondJdbcType;
+import org.postgresql.util.PGInterval;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -35,12 +39,14 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private AccountStatus status;
 
     @Column(nullable = false)
     private BigDecimal credit_max;
 
     @Column(name = "credit_interval", columnDefinition = "interval")
+    @JdbcType(PostgreSQLIntervalSecondJdbcType.class)
     private Duration credit_interval;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
