@@ -47,4 +47,10 @@ public class ServicesController {
         return String.format("redirect:/service?service_id=%d", service.getService_id());
     }
 
+    @GetMapping("/remove_service")
+    String removeClient(@RequestParam Integer service_id, Model model) {
+        serviceDAO.deleteById(service_id);
+        return "redirect:/services";
+    }
+
 }

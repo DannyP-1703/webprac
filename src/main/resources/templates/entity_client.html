@@ -107,6 +107,12 @@
                 <div class="col">
                     <button type="button" class="btn btn-secondary" id="edit-button">Редактировать</button>
                 </div>
+                <div class="col">
+                    <a role="button" class="btn btn-outline-danger" id="remove-button"
+                       th:href="'/remove_client?client_id=' + ${client.getClient_id()} + '&client_type=1'">
+                        Удалить
+                    </a>
+                </div>
             </div>
         </form>
     </div>

@@ -84,4 +84,14 @@ public class ClientsController {
         return String.format("redirect:/client?client_id=%d&client_type=1", client.getClient_id());
     }
 
+    @GetMapping("/remove_client")
+    String removeClient(@RequestParam Integer client_id, @RequestParam Integer client_type, Model model) {
+        if (client_type == 0) {
+            individualClient.deleteById(client_id);
+        } else {
+            entityClient.deleteById(client_id);
+        }
+        return "redirect:/clients";
+    }
+
 }
