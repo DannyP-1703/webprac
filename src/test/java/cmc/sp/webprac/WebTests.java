@@ -1,20 +1,27 @@
 package cmc.sp.webprac;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WebTests {
     private final String url = "http://localhost:8080";
 
     @Test
+    @Order(1)
     void indexPageTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/index");
@@ -23,6 +30,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(2)
     void getClientListTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/index");
@@ -41,6 +49,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(3)
     void createClientTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/clients");
@@ -71,6 +80,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(4)
     void editClientTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/client?client_id=3&client_type=1");
@@ -98,6 +108,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(5)
     void getAccountTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/clients");
@@ -112,6 +123,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(6)
     void createAccountTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/client?client_id=5&client_type=0");
@@ -128,6 +140,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(7)
     void getServiceListTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/index");
@@ -145,6 +158,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(8)
     void createsServiceTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/services");
@@ -175,6 +189,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(9)
     void deleteServiceTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/service?service_id=4");
@@ -197,6 +212,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(10)
     void getOperationsTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/account?account_id=6");
@@ -218,6 +234,7 @@ public class WebTests {
     }
 
     @Test
+    @Order(11)
     void disconnectServiceTest() {
         ChromeDriver driver = new ChromeDriver();
         driver.get(url + "/account?account_id=6");
