@@ -3,6 +3,7 @@ package cmc.sp.webprac.controllers;
 import cmc.sp.webprac.dao.*;
 import cmc.sp.webprac.enums.AccountStatus;
 import cmc.sp.webprac.models.Account;
+import cmc.sp.webprac.models.Client;
 import cmc.sp.webprac.models.ConnectedServices;
 import cmc.sp.webprac.models.Service;
 import org.postgresql.util.PGInterval;
@@ -51,6 +52,9 @@ public class AccountsController {
 
     @Autowired
     ConnectedServicesDAO connectedServicesDAO;
+
+    @Autowired
+    OperationDAO operationDAO;
 
     @GetMapping("/account")
     String account(@RequestParam Integer account_id, Model model) {
@@ -157,6 +161,20 @@ public class AccountsController {
             //}
         }
         return String.format("redirect:/account?account_id=%d", account.getAccount_id());
+    }
+
+    @GetMapping("/operations")
+    String getOperation(@RequestParam Integer account_id, Model model) {
+        var account = accountDAO.getById(account_id);
+        if (account.getIndividual_client() != null) {
+            model.addAttribute("client", new Client(account.getIndividual_client()));
+        }
+        if (account.getEntity_client() != null) {
+            model.addAttribute("client", new Client(account.getEntity_client()));
+        }
+        model.addAttribute("operations", operationDAO.getFilteredOperationsByAccount(account, null));
+        model.addAttribute("account", account);
+        return "operations";
     }
 
 }

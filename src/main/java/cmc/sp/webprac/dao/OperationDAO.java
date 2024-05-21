@@ -4,6 +4,8 @@ import cmc.sp.webprac.filters.OperationFilter;
 import cmc.sp.webprac.models.Account;
 import cmc.sp.webprac.models.Operation;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
@@ -34,7 +36,8 @@ public class OperationDAO extends AbstractDAO<Operation, Integer>{
                 ));
             }
 
-            criteria.select(root).where(predicates.toArray(new Predicate[0]));
+            criteria.select(root).where(predicates.toArray(new Predicate[0]))
+                    .orderBy(cBuilder.desc(root.get("operation_time")));
 
             return session.createQuery(criteria).getResultList();
         }
