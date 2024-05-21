@@ -40,8 +40,7 @@
 
 <div class="main-body">
 
-    <a role="button" class="btn btn-outline-secondary"
-       th:href="'/client?client_id=' + ${client_id} + '&client_type=' + ${client_type}"><< Назад</a>
+    <a role="button" class="btn btn-outline-secondary" onclick="goBack()"><< Назад</a>
 
     <div class="row mt-4">
         <h1 class="title">Просмотр счёта</h1>
@@ -53,12 +52,13 @@
                 <label for="id" class="form-label">Номер счёта</label>
                 <input type="text" class="form-control" id="id" th:field="*{account_id}" disabled>
             </div>
-            <div class="mb-3" th:if="${account.getIndividual_client() != null}" >
+            <div class="mb-3" th:if="${account.getIndividual_client() != null}">
                 <label for="holder_name_individual" class="form-label">Владелец</label>
-                <input type="text" class="form-control"
-                       id="holder_name_individual" th:value="${account.getIndividual_client().getFullName()}" disabled>
+                <input type="text" class="form-control" id="holder_name_individual"
+                       th:onclick="window.location.href='/clients?client_id=' + ${client_id} + '&client_type=' + ${client_type}"
+                       th:value="${account.getIndividual_client().getFullName()}" disabled>
             </div>
-            <div class="mb-3" th:if="${account.getEntity_client() != null}" >
+            <div class="mb-3" th:if="${account.getEntity_client() != null}">
                 <label for="holder_name_entity" class="form-label">Владелец</label>
                 <input type="text" class="form-control"
                        id="holder_name_entity" th:value="${account.getEntity_client().getName()}" disabled>
@@ -73,7 +73,8 @@
             </div>
             <div class="mb-3">
                 <label for="serviced_phone_number" class="form-label">Номер обслуживаемого телефона</label>
-                <input type="text" class="form-control" id="serviced_phone_number" th:field="*{serviced_phone_number}" disabled>
+                <input type="text" class="form-control" id="serviced_phone_number" th:field="*{serviced_phone_number}"
+                       disabled>
             </div>
             <div class="mb-3">
                 <label for="status" class="form-label">Статус</label> <br>
@@ -94,15 +95,27 @@
 
             <div class="row">
                 <div class="col">
-                    <button type="button" class="btn btn-success" id="save-button" disabled>Активировать</button>
+                    <a role="button"
+                       th:class="'btn btn-success' + ${account.getStatus().name() != 'BLOCKED' ? ' disabled' : ''}"
+                       id="activate-button"
+                       th:href="'/activate_account?account_id=' + ${account.getAccount_id()}">
+                        Активировать
+                    </a>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-secondary" id="edit-button">Заблокировать</button>
+                    <a role="button"
+                       th:class="'btn btn-primary' + ${account.getStatus().name() != 'ACTIVE' ? ' disabled' : ''}"
+                       id="block-button"
+                       th:href="'/block_account?account_id=' + ${account.getAccount_id()}">
+                        Заблокировать
+                    </a>
                 </div>
                 <div class="col">
-                    <a role="button" class="btn btn-outline-danger" id="remove-button"
-                       th:href="'/remove_account?account_id=' + ${account.getAccount_id()}">
-                        Удалить
+                    <a role="button"
+                       th:class="'btn btn-outline-danger' + ${account.getStatus().name() == 'CLOSED' ? ' disabled' : ''}"
+                       id="close-button"
+                       th:href="'/close_account?account_id=' + ${account.getAccount_id()}">
+                        Закрыть
                     </a>
                 </div>
             </div>
@@ -114,34 +127,105 @@
 
     <p th:if="${account.getConnectedServices().size() == 0}">К счёту ещё не подключено ни одной услуги</p>
 
-    <table class="table" th:if="${account.getConnectedServices().size() > 0}">
-        <thead>
-        <tr>
-            <th scope="col">Название</th>
-            <th scope="col">Тип а/п</th>
-            <th scope="col">Стоимость а/п</th>
-            <th scope="col">Время подключения</th>
-            <th scope="col"> </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="service: ${account.getConnectedServices()}">
-            <td><a class="ref" th:href="'/service?service_id=' + ${service.getService().getService_id()}"
-                   th:text="${service.getService().getName()}">&nbsp;</a></td>
-            <td th:text="${service.getService().getSubscription_type().value()}"></td>
-            <td th:text="${service.getService().getSubscription_fee()}"></td>
-            <td th:text="${service.getConnection_time()}"></td>
-            <td>
-                <a class="btn btn-danger btn-sm" role="button"
-                   th:href="'/disconnect_service?connection_id=' + ${service.getConnection_id()}">
-                    Отключить
-                </a>
-            </td>
-        </tr>
-    </table>
+    <div class="row" id="show-button">
+        <div class="col">
+            <button type="button" class="btn btn-primary" id="add-button">Подключить услуги</button>
+        </div>
+    </div>
 
+    <div class="row" id="edit" hidden>
+        <form th:action="@{/edit_connections}" method="post" th:object="${selectedServices}">
+
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-success" id="save-button">Сохранить</button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-outline-danger" id="back-button">
+                        Отмена
+                    </button>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Тип а/п</th>
+                    <th scope="col">Стоимость а/п</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="service: ${services}">
+                    <td>
+                        <input class="form-check-input" type="checkbox" th:field="*{newServices}"
+                               th:value="${service.getService_id()}"/>
+                    </td>
+                    <td><a class="ref" th:href="'/service?service_id=' + ${service.getService_id()}"
+                           th:text="${service.getName()}">&nbsp;</a></td>
+                    <td th:text="${service.getSubscription_type().value()}"></td>
+                    <td th:text="${service.getSubscription_fee()}"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="row" id="show-table">
+        <table class="table" th:if="${account.getConnectedServices().size() > 0}">
+            <thead>
+            <tr>
+                <th scope="col">Название</th>
+                <th scope="col">Тип а/п</th>
+                <th scope="col">Стоимость а/п</th>
+                <th scope="col">Время подключения</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="service: ${account.getConnectedServices()}">
+                <td><a class="ref" th:href="'/service?service_id=' + ${service.getService().getService_id()}"
+                       th:text="${service.getService().getName()}">&nbsp;</a></td>
+                <td th:text="${service.getService().getSubscription_type().value()}"></td>
+                <td th:text="${service.getService().getSubscription_fee()}"></td>
+                <td th:text="${service.getConnection_time()}"></td>
+                <td>
+                    <a class="btn btn-danger btn-sm" role="button"
+                       th:href="'/disconnect_service?connection_id=' + ${service.getConnection_id()}">
+                        Отключить
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 
 <div th:replace="general_elements :: page-footer"></div>
+
+<script>
+    function goBack() {
+        window.location.href=document.referrer;
+    }
+
+    document.getElementById('add-button').addEventListener('click', function () {
+        var button = document.getElementById('show-button');
+        var editor = document.getElementById('edit');
+        var table = document.getElementById('show-table');
+
+        button.hidden = true;
+        editor.hidden = false;
+        table.hidden = true;
+    });
+
+    document.getElementById('back-button').addEventListener('click', function () {
+        var button = document.getElementById('show-button');
+        var editor = document.getElementById('edit');
+        var table = document.getElementById('show-table');
+
+        button.hidden = false;
+        editor.hidden = true;
+        table.hidden = false;
+    });
+</script>
 </body>
 </html>

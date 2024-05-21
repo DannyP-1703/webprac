@@ -3,6 +3,7 @@ package cmc.sp.webprac.controllers;
 import cmc.sp.webprac.dao.*;
 import cmc.sp.webprac.enums.AccountStatus;
 import cmc.sp.webprac.models.Account;
+import cmc.sp.webprac.models.ConnectedServices;
 import cmc.sp.webprac.models.Service;
 import org.postgresql.util.PGInterval;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,27 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class AccountsController {
+
+    static class SelectedServices {
+        List<Service> newServices;
+
+        public SelectedServices() {
+            this.newServices = new ArrayList<>();
+        }
+
+        public List<Service> getNewServices() {
+            return newServices;
+        }
+
+        public void setNewServices(List<Service> newServices) {
+            this.newServices = newServices;
+        }
+    }
 
     @Autowired
     AccountDAO accountDAO;
@@ -26,6 +45,9 @@ public class AccountsController {
 
     @Autowired
     EntityClientDAO entityClient;
+
+    @Autowired
+    ServiceDAO serviceDAO;
 
     @Autowired
     ConnectedServicesDAO connectedServicesDAO;
@@ -38,7 +60,14 @@ public class AccountsController {
         model.addAttribute("account", account);
         model.addAttribute("client_type", individual != null ? 0 : 1);
         model.addAttribute("client_id", individual != null ? individual.getClient_id() : entity.getClient_id());
-        //model.addAttribute("connectedServicesDAO", connectedServicesDAO);
+        var services = new ArrayList<Service>();
+        for (var service : serviceDAO.getAll()) {
+            if (connectedServicesDAO.getServiceConnection(account, service) == null) {
+                services.add(service);
+            }
+        }
+        model.addAttribute("services", services);
+        model.addAttribute("selectedServices", new SelectedServices());
         return "account";
     }
 
@@ -84,6 +113,50 @@ public class AccountsController {
         var acc_id = connectedServicesDAO.getById(connection_id).getAccount().getAccount_id();
         connectedServicesDAO.deleteById(connection_id);
         return String.format("redirect:/account?account_id=%d", acc_id);
+    }
+
+    @GetMapping("/activate_account")
+    String activateAccount(@RequestParam Integer account_id, Model model) {
+        var account = accountDAO.getById(account_id);
+        account.setStatus(AccountStatus.ACTIVE);
+        account = accountDAO.update(account);
+        return String.format("redirect:/account?account_id=%d", account.getAccount_id());
+    }
+
+    @GetMapping("/block_account")
+    String blockAccount(@RequestParam Integer account_id, Model model) {
+        var account = accountDAO.getById(account_id);
+        account.setStatus(AccountStatus.BLOCKED);
+        account = accountDAO.update(account);
+        return String.format("redirect:/account?account_id=%d", account.getAccount_id());
+    }
+
+    @GetMapping("/close_account")
+    String closeAccount(@RequestParam Integer account_id, Model model) {
+        var account = accountDAO.getById(account_id);
+        account.setStatus(AccountStatus.CLOSED);
+        account = accountDAO.update(account);
+        return String.format("redirect:/account?account_id=%d", account.getAccount_id());
+    }
+
+    @PostMapping("/edit_connections")
+    String editConnections(@ModelAttribute SelectedServices selectedServices, @ModelAttribute Account account, Model model) {
+        /*var oldServices = new ArrayList<Service>();
+        for (var connectedService : account.getConnectedServices()) {
+            oldServices.add(connectedService.getService());
+        }
+        for (var service : oldServices) {
+            if (!services.contains(service)) {
+                connectedServicesDAO.delete(connectedServicesDAO.getServiceConnection(account, service));
+            }
+        }*/
+        var newServices = selectedServices.getNewServices();
+        for (var service : newServices) {
+            //if (!oldServices.contains(service)) {
+                connectedServicesDAO.save(new ConnectedServices(null, account, service, Timestamp.from(Instant.now())));
+            //}
+        }
+        return String.format("redirect:/account?account_id=%d", account.getAccount_id());
     }
 
 }
