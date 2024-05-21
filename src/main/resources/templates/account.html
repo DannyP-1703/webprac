@@ -40,7 +40,7 @@
 
 <div class="main-body">
 
-    <a role="button" class="btn btn-outline-secondary" th:href="'/clients?client_id=' + ${client_id} + '&client_type=' + ${client_type}"><< Назад</a>
+    <a role="button" class="btn btn-outline-secondary" th:href="'/client?client_id=' + ${client_id} + '&client_type=' + ${client_type}"><< Назад</a>
 
     <div class="row mt-4">
         <h1 class="title">Просмотр счёта</h1>
@@ -124,14 +124,14 @@
 
     <br><br>
     <h2>Операции по счёту</h2>
-    <a role="button" class="btn btn-outline-primary btn-lg" th:href="'/operations?account_id=' + ${account.getAccount_id()}">
+    <a role="button" id="operations-button" class="btn btn-outline-primary btn-lg" th:href="'/operations?account_id=' + ${account.getAccount_id()}">
         Перейти к операциям
     </a>
 
     <br><br>
     <h2>Список подключенных услуг</h2>
 
-    <p th:if="${account.getConnectedServices().size() == 0}">К счёту ещё не подключено ни одной услуги</p>
+    <p id="no-connections-text"  th:if="${account.getConnectedServices().size() == 0}">К счёту ещё не подключено ни одной услуги</p>
 
     <div class="row" id="show-button">
         <div class="col">

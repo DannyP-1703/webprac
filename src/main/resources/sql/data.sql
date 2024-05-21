@@ -27,7 +27,7 @@ INSERT INTO entity_client (registration_number, name, region, address, contact_s
 
 INSERT INTO service (name, subscription_type, activation_fee, subscription_fee, deactivation_fee, duration, package_phone, package_internet, package_message, description) VALUES
 ('Тариф "Выгодный"', 'MONTHLY', '10', '580', '10', NULL, '1000', '65', '300', ''),
-('"Больше интернета"', 'ONETIME', '150', NULL, NULL, NULL, NULL, '20', NULL, 'Дополнительный пакет интернета'),
+('"Больше интернета"', 'ONETIME', '150', NULL, '50', NULL, NULL, '20', NULL, 'Дополнительный пакет интернета'),
 ('Музыка', 'DAILY', '0', '8', '0', NULL, NULL, NULL, NULL, 'Подключение к музыкальному стриминговому сервису от Yandex');
 
 INSERT INTO account (individual_client_id, entity_client_id, creation_time, balance, serviced_phone_number, status, credit_max, credit_interval) VALUES

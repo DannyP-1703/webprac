@@ -40,7 +40,7 @@
 <div class="main-body">
     <a role="button" class="btn btn-outline-secondary btn-md" href="/services"><< Назад</a>
     <div class="list-group">
-        <form method="post" th:action="@{/saveService}" th:object="${service}">
+        <form method="post" th:action="@{/saveService}" th:object="${service}" id="form">
             <input type="hidden" th:field="*{service_id}" />
             <div class="mb-3">
                 <label for="name" class="form-label">Название услуги</label>

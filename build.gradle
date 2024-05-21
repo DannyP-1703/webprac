@@ -25,6 +25,8 @@ dependencies {
 	implementation 'org.thymeleaf:thymeleaf'
 	implementation 'org.thymeleaf:thymeleaf-spring6'
 
+	implementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
